@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Spotify Streamer</string>
+    <string name="action_settings">Settings</string>
+    <string name="search_hint">Artist Name</string>
+    <string name="title_activity_tracks">Top Tracks</string>
+    <string name="country_key">country</string>
+    <string name="artists_key">artists</string>
+    <string name="tracks_key">tracks</string>
+    <string name="artist_error_message">No artist found!</string>
+    <string name="track_error_message">No track available!</string>
+</resources>
