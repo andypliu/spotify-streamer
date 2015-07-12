@@ -36,10 +36,12 @@ public class TrackAdapter extends ArrayAdapter<Track> {
         ImageView imageView = (ImageView) convertView.findViewById(R.id.list_item_thumbnail);
 
         if ( track.album.images != null &&  track.album.images.size() > 0){
-            Image image =  track.album.images.get( track.album.images.size() - 1);
-            Picasso.with(convertView.getContext()).load(image.url).into(imageView);
-        } else {
-            imageView.setImageResource(R.drawable.placeholder);
+            if (track.album.images.size() > 0) {
+                Image image = track.album.images.get(track.album.images.size() - 1);
+                Picasso.with(convertView.getContext()).load(image.url).into(imageView);
+            } else {
+                imageView.setImageResource(R.drawable.placeholder);
+            }
         }
 
         TextView albumNameView = (TextView) convertView.findViewById(R.id.list_item_album_name);

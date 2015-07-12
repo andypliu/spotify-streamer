@@ -68,11 +68,12 @@ public class FetchArtistSearchTask extends AsyncTask<String, Void, List<Artist>>
             mArtistAdapter.clear();
 
             if (result.size() == 0) {
-                Toast.makeText(mContext, mContext.getString(R.string.artist_error_message),
-                        Toast.LENGTH_SHORT).show();
-            }
-            for(Artist artist : result) {
+                Artist artist = new Artist("", mContext.getString(R.string.artist_error_message), null);
                 mArtistAdapter.add(artist);
+            } else {
+                for (Artist artist : result) {
+                    mArtistAdapter.add(artist);
+                }
             }
         }
     }

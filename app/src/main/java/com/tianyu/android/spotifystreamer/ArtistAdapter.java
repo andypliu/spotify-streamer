@@ -34,11 +34,16 @@ public class ArtistAdapter extends ArrayAdapter<Artist> {
 
         ImageView imageView = (ImageView) convertView.findViewById(R.id.list_item_icon);
 
-        if (artist.images != null && artist.images.size() > 0){
-            Image image = artist.images.get(artist.images.size() - 1);
-            Picasso.with(convertView.getContext()).load(image.url).into(imageView);
+        if (artist.images != null) {
+            imageView.setVisibility(View.VISIBLE);
+            if(artist.images.size() > 0) {
+                Image image = artist.images.get(artist.images.size() - 1);
+                Picasso.with(convertView.getContext()).load(image.url).into(imageView);
+            } else {
+                imageView.setImageResource(R.drawable.placeholder);
+            }
         } else {
-            imageView.setImageResource(R.drawable.placeholder);
+            imageView.setVisibility(View.INVISIBLE);
         }
 
         TextView artistNameView = (TextView) convertView.findViewById(R.id.list_item_artist_name);

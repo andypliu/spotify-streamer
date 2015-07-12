@@ -73,7 +73,7 @@ public class TracksFragment extends Fragment {
 
                 Artist artist = intent.getParcelableExtra(Intent.EXTRA_ASSIST_CONTEXT);
                 FetchTrackSearchTask fetchTrackSearchTask = new FetchTrackSearchTask(rootView.getContext(), mTrackAdapter);
-                getActivity().setTitle("Top 10 Tracks " + artist.name);
+                getActivity().setTitle(rootView.getContext().getString(R.string.title_activity_tracks) + " " + artist.name);
 
                 fetchTrackSearchTask.execute(artist.id);
             }

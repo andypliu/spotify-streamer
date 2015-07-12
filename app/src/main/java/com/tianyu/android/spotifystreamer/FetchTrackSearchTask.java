@@ -68,8 +68,8 @@ public class FetchTrackSearchTask extends AsyncTask<String, Void, List<Track>> {
             mTrackAdapter.clear();
 
             if (result.size() == 0) {
-                Toast.makeText(mContext, mContext.getString(R.string.track_error_message),
-                        Toast.LENGTH_SHORT).show();
+                Track track = new Track(new Album(mContext.getString(R.string.track_error_message), null), "");
+                mTrackAdapter.add(track);
             }
             for (Track track : result) {
                 mTrackAdapter.add(track);
