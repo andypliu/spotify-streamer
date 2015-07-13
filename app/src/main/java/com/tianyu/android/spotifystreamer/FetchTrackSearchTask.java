@@ -2,7 +2,6 @@ package com.tianyu.android.spotifystreamer;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.tianyu.android.spotifystreamer.com.tianyu.android.spotifystreamer.data.Album;
 import com.tianyu.android.spotifystreamer.com.tianyu.android.spotifystreamer.data.Image;
@@ -55,8 +54,8 @@ public class FetchTrackSearchTask extends AsyncTask<String, Void, List<Track>> {
                 pResults.add(pTrack);
             }
         } catch (Exception e) {
-            Toast.makeText(mContext, "ERROR: " + e.getMessage(),
-                    Toast.LENGTH_SHORT).show();
+            Track track = new Track(new Album("ERROR: " + e.getMessage(), null), "");
+            pResults.add(track);
         }
 
         return pResults;

@@ -2,7 +2,6 @@ package com.tianyu.android.spotifystreamer;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.tianyu.android.spotifystreamer.com.tianyu.android.spotifystreamer.data.Artist;
 import com.tianyu.android.spotifystreamer.com.tianyu.android.spotifystreamer.data.Image;
@@ -55,8 +54,8 @@ public class FetchArtistSearchTask extends AsyncTask<String, Void, List<Artist>>
                 pResults.add(pArtist);
             }
         } catch(Exception e) {
-            Toast.makeText(mContext, "ERROR: " + e.getMessage(),
-                    Toast.LENGTH_SHORT).show();
+            Artist artist = new Artist("", "ERROR: " + e.getMessage(), null);
+            pResults.add(artist);
         }
 
         return pResults;
