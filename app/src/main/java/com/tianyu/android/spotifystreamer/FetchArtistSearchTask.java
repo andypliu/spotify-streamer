@@ -1,6 +1,5 @@
 package com.tianyu.android.spotifystreamer;
 
-import android.content.Context;
 import android.os.AsyncTask;
 
 import com.tianyu.android.spotifystreamer.com.tianyu.android.spotifystreamer.data.Artist;
@@ -13,22 +12,17 @@ import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 
-
-
 /**
  * Created by andy on 7/10/15
  */
 public class FetchArtistSearchTask extends AsyncTask<String, Void, List<Artist>>
 {
-
     String LOG_TAG = FetchArtistSearchTask.class.getSimpleName();
 
-    ArtistAdapter mArtistAdapter;
-    Context mContext;
+    FetchArtistListener mListenser = null;
 
-    public FetchArtistSearchTask(Context context, ArtistAdapter artistAdapter) {
-        mArtistAdapter = artistAdapter;
-        mContext = context;
+    public FetchArtistSearchTask(FetchArtistListener listenser) {
+        mListenser = listenser;
     }
 
     @Override
@@ -62,18 +56,7 @@ public class FetchArtistSearchTask extends AsyncTask<String, Void, List<Artist>>
     }
 
     @Override
-    protected void onPostExecute(List<Artist>result) {
-        if (result != null) {
-            mArtistAdapter.clear();
-
-            if (result.size() == 0) {
-                Artist artist = new Artist("", mContext.getString(R.string.artist_error_message), null);
-                mArtistAdapter.add(artist);
-            } else {
-                for (Artist artist : result) {
-                    mArtistAdapter.add(artist);
-                }
-            }
-        }
+    protected void onPostExecute(List<Artist> results) {
+         mListenser.processFinish(results);
     }
 }

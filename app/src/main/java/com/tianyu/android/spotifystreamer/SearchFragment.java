@@ -17,6 +17,7 @@ import android.widget.ListView;
 import com.tianyu.android.spotifystreamer.com.tianyu.android.spotifystreamer.data.Artist;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -27,6 +28,7 @@ public class SearchFragment extends Fragment {
     EditText mSearchText;
     ArrayList<Artist> mArtists;
     ArtistAdapter mArtistAdapter;
+    Context mContext;
     boolean mFetchData = true;
 
     public SearchFragment() {
@@ -35,6 +37,7 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getActivity().getApplicationContext();
     }
 
     @Override
@@ -102,7 +105,22 @@ public class SearchFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 if (mFetchData && s.length() > 0) {
-                    FetchArtistSearchTask fetchSearchTask = new FetchArtistSearchTask(view.getContext(), mArtistAdapter);
+                    FetchArtistSearchTask fetchSearchTask = new FetchArtistSearchTask(new FetchArtistListener() {
+                        @Override
+                        public void processFinish(List<Artist> result) {
+                            if (result != null) {
+                                mArtistAdapter.clear();
+                                if (result.size() == 0) {
+                                    Artist artist = new Artist("", mContext.getString(R.string.artist_error_message), null);
+                                    mArtistAdapter.add(artist);
+                                } else {
+                                    for (Artist artist : result) {
+                                        mArtistAdapter.add(artist);
+                                    }
+                                }
+                            }
+                        }
+                    });
                     fetchSearchTask.execute(s.toString());
                 } else {
                     mFetchData = true;

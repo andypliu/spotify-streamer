@@ -1,6 +1,5 @@
 package com.tianyu.android.spotifystreamer;
 
-import android.content.Context;
 import android.os.AsyncTask;
 
 import com.tianyu.android.spotifystreamer.com.tianyu.android.spotifystreamer.data.Album;
@@ -23,12 +22,10 @@ import kaaes.spotify.webapi.android.models.Tracks;
 public class FetchTrackSearchTask extends AsyncTask<String, Void, List<Track>> {
     String LOG_TAG = FetchTrackSearchTask.class.getSimpleName();
 
-    TrackAdapter mTrackAdapter;
-    Context mContext;
+    FetchTrackListener mListener;
 
-    public FetchTrackSearchTask(Context context, TrackAdapter artistAdapter) {
-        mTrackAdapter = artistAdapter;
-        mContext = context;
+    public FetchTrackSearchTask(FetchTrackListener listener) {
+         mListener = listener;
     }
 
     @Override
@@ -40,7 +37,7 @@ public class FetchTrackSearchTask extends AsyncTask<String, Void, List<Track>> {
 
             String artistId = params[0];
             Map<String, Object> map = new HashMap<>();
-            map.put(mContext.getString(R.string.country_key), Locale.getDefault().getCountry());
+            map.put("country", Locale.getDefault().getCountry());
 
             Tracks results = service.getArtistTopTrack(artistId, map);
             for (kaaes.spotify.webapi.android.models.Track track : results.tracks) {
@@ -63,16 +60,6 @@ public class FetchTrackSearchTask extends AsyncTask<String, Void, List<Track>> {
 
     @Override
     protected void onPostExecute(List<Track> result) {
-        if (result != null) {
-            mTrackAdapter.clear();
-
-            if (result.size() == 0) {
-                Track track = new Track(new Album(mContext.getString(R.string.track_error_message), null), "");
-                mTrackAdapter.add(track);
-            }
-            for (Track track : result) {
-                mTrackAdapter.add(track);
-            }
-        }
+         mListener.processFinish(result);
     }
 }

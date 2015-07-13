@@ -1,5 +1,6 @@
 package com.tianyu.android.spotifystreamer;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,10 +11,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.tianyu.android.spotifystreamer.com.tianyu.android.spotifystreamer.data.Album;
 import com.tianyu.android.spotifystreamer.com.tianyu.android.spotifystreamer.data.Artist;
 import com.tianyu.android.spotifystreamer.com.tianyu.android.spotifystreamer.data.Track;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -22,6 +25,7 @@ public class TracksFragment extends Fragment {
 
     TrackAdapter mTrackAdapter;
     ArrayList<Track> mTracks;
+    Context mContext;
     boolean fetchTrack = true;
 
     private String LOG_TAG = TracksFragment.class.getSimpleName();
@@ -32,6 +36,7 @@ public class TracksFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getActivity().getApplicationContext();
     }
 
     @Override
@@ -72,7 +77,22 @@ public class TracksFragment extends Fragment {
             if (intent != null && intent.hasExtra(Intent.EXTRA_ASSIST_CONTEXT)) {
 
                 Artist artist = intent.getParcelableExtra(Intent.EXTRA_ASSIST_CONTEXT);
-                FetchTrackSearchTask fetchTrackSearchTask = new FetchTrackSearchTask(rootView.getContext(), mTrackAdapter);
+                FetchTrackSearchTask fetchTrackSearchTask = new FetchTrackSearchTask(new FetchTrackListener() {
+                    @Override
+                    public void processFinish(List<Track> result) {
+                        if (result != null) {
+                            mTrackAdapter.clear();
+
+                            if (result.size() == 0) {
+                                Track track = new Track(new Album(mContext.getString(R.string.track_error_message), null), "");
+                                mTrackAdapter.add(track);
+                            }
+                            for (Track track : result) {
+                                mTrackAdapter.add(track);
+                            }
+                        }
+                    }
+                });
                 getActivity().setTitle(rootView.getContext().getString(R.string.title_activity_tracks) + " " + artist.name);
 
                 fetchTrackSearchTask.execute(artist.id);
