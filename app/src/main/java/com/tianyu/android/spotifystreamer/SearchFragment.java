@@ -4,14 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import com.tianyu.android.spotifystreamer.com.tianyu.android.spotifystreamer.data.Artist;
@@ -25,7 +23,7 @@ import java.util.List;
 public class SearchFragment extends Fragment {
 
     String LOG_TAG = SearchFragment.class.getSimpleName();
-    EditText mSearchText;
+    SearchView mSearchView;
     ArrayList<Artist> mArtists;
     ArtistAdapter mArtistAdapter;
     Context mContext;
@@ -48,7 +46,7 @@ public class SearchFragment extends Fragment {
 
     @Override
     public void onResume() {
-        if (mSearchText.hasFocus()) {
+        if (mSearchView.hasFocus()) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         }
@@ -88,44 +86,40 @@ public class SearchFragment extends Fragment {
 
     public void addTextChangedListener(final View view) {
         // get mSearchText component
-        mSearchText = (EditText) view.findViewById(R.id.search);
+        mSearchView = (SearchView) view.findViewById(R.id.artist_search);
 
-        mSearchText.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (mFetchData && s.length() > 0) {
-                    FetchArtistSearchTask fetchSearchTask = new FetchArtistSearchTask(new FetchArtistListener() {
-                        @Override
-                        public void processFinish(List<Artist> result) {
-                            if (result != null) {
-                                mArtistAdapter.clear();
-                                if (result.size() == 0) {
-                                    Artist artist = new Artist("", mContext.getString(R.string.artist_error_message), null);
-                                    mArtistAdapter.add(artist);
-                                } else {
-                                    for (Artist artist : result) {
-                                        mArtistAdapter.add(artist);
+        mSearchView.setOnQueryTextListener(
+                new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        if (mFetchData && query.length() > 0) {
+                            FetchArtistSearchTask fetchSearchTask = new FetchArtistSearchTask(new FetchArtistListener() {
+                                @Override
+                                public void processFinish(List<Artist> result) {
+                                    if (result != null) {
+                                        mArtistAdapter.clear();
+                                        if (result.size() == 0) {
+                                            Artist artist = new Artist("", mContext.getString(R.string.artist_error_message), null);
+                                            mArtistAdapter.add(artist);
+                                        } else {
+                                            for (Artist artist : result) {
+                                                mArtistAdapter.add(artist);
+                                            }
+                                        }
                                     }
                                 }
-                            }
+                            });
+                            fetchSearchTask.execute(query.toString());
+                        } else {
+                            mFetchData = true;
                         }
-                    });
-                    fetchSearchTask.execute(s.toString());
-                } else {
-                    mFetchData = true;
-                }
-            }
-        });
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        return false;
+                    }
+                });
     }
 }
