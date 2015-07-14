@@ -7,12 +7,9 @@ import android.view.MenuItem;
 
 public class TracksActivity extends AppCompatActivity {
 
-    boolean customTitleSupported = true;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //set contentview
         setContentView(R.layout.activity_tracks);
     }
 

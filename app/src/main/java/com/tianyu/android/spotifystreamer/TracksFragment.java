@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tianyu.android.spotifystreamer.com.tianyu.android.spotifystreamer.data.Album;
@@ -72,11 +74,12 @@ public class TracksFragment extends Fragment {
             }
         });
 
+        Artist artist = null;
         if (fetchTrack) {
             Intent intent = getActivity().getIntent();
             if (intent != null && intent.hasExtra(Intent.EXTRA_ASSIST_CONTEXT)) {
 
-                Artist artist = intent.getParcelableExtra(Intent.EXTRA_ASSIST_CONTEXT);
+                artist = intent.getParcelableExtra(Intent.EXTRA_ASSIST_CONTEXT);
                 FetchTrackSearchTask fetchTrackSearchTask = new FetchTrackSearchTask(new FetchTrackListener() {
                     @Override
                     public void processFinish(List<Track> result) {
@@ -99,6 +102,19 @@ public class TracksFragment extends Fragment {
             }
         }
 
+        final ViewGroup actionBarLayout = (ViewGroup) inflater.inflate(
+                R.layout.track_title_bar,
+                null);
+
+        // Update the action bar title with artist's name
+        final ActionBar actionBar = ((TracksActivity)getActivity()).getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setCustomView(actionBarLayout);
+
+        TextView actionBarTitle = (TextView) actionBarLayout.findViewById(R.id.list_item_artist_name);
+        actionBarTitle.setText(artist.name);
         return rootView;
     }
 }
